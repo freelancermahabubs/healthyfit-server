@@ -21,8 +21,6 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(morgan("dev"));
 
-// verify jwt
-// validate jwt
 const verifyJWT = (req, res, next) => {
   const authorization = req.headers.authorization;
   if (!authorization) {
@@ -31,8 +29,7 @@ const verifyJWT = (req, res, next) => {
       .send({ error: true, message: "unAuthorized Access" });
   }
   const token = authorization.split(" ")[1];
-  // console.log(token);
-  // token verify
+
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (error, decoded) => {
     if (error) {
       return res
@@ -93,19 +90,6 @@ async function run() {
       next();
     };
 
-    // const verifyInstructor = async (req, res, next) => {
-    //   const email = req.decoded.email;
-    //   const query = { email: email };
-    //   const user = await usersCollection.findOne(query);
-    //   console.log(user);
-    //   console.log(user);
-    //   if (user?.role !== "instructor") {
-    //     return res
-    //       .status(403)
-    //       .send({ error: true, message: "forbidden message" });
-    //   }
-    //   next();
-    // };
     // user related apis
     app.get("/users", verifyJWT, verifyAdmin, async (req, res) => {
       const result = await usersCollection.find().toArray();
